@@ -77,3 +77,28 @@ class Enemy:
     def draw(self, screen):
         screen.blit(self.image, (self.x - self.width / 2, self.y))
 
+# Define the main game loop
+dragon = Dragon(WIDTH / 2, HEIGHT - 100)
+enemies = []
+clock = pygame.time.Clock()
+score = 0
+done = False
+while not done:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            done = True
+
+    # Update the game objects
+    dragon.update()
+    for enemy in enemies:
+        enemy.update()
+        if enemy.y > HEIGHT:
+            enemies.remove(enemy)
+        if (dragon.x - enemy.x) ** 2 + (dragon.y - enemy.y) ** 2 < (dragon.width / 2 + enemy.width / 2) ** 2:
+            done = True
+        for bullet in dragon.bullets:
+            if (bullet.x - enemy.x) ** 2 + (bullet.y - enemy.y) ** 2 < (bullet.width / 2 + enemy.width / 2) ** 2:
+                enemies.remove(enemy)
+                dragon.bullets.remove(bullet)
+                score += 10
+
