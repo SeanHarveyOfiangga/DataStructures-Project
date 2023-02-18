@@ -47,3 +47,33 @@ class Dragon:
         for bullet in self.bullets:
             bullet.update()
 
+class Bullet:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.image = bullet_image
+        self.width = self.image.get_width()
+        self.height = self.image.get_height()
+        self.speed = 10
+
+    def update(self):
+        self.y -= self.speed
+
+    def draw(self, screen):
+        screen.blit(self.image, (self.x - self.width / 2, self.y))
+
+class Enemy:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.image = enemy_image
+        self.width = self.image.get_width()
+        self.height = self.image.get_height()
+        self.speed = 5
+
+    def update(self):
+        self.y += self.speed
+
+    def draw(self, screen):
+        screen.blit(self.image, (self.x - self.width / 2, self.y))
+
