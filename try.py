@@ -89,20 +89,20 @@ while not done:
             done = True
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
-                dragon.move_left()
+                dragon.x -= dragon.speed
             elif event.key == pygame.K_RIGHT:
-                dragon.move_right()
+                dragon.x += dragon.speed
             elif event.key == pygame.K_SPACE:
-                bullet = dragon.shoot()
+                bullet = dragon.fire_bullet()
                 if bullet is not None:
                     dragon.bullets.append(bullet)
 
     # Move the game objects
-    dragon.move()
+    dragon.update()
     for bullet in dragon.bullets:
-        bullet.move()
+        bullet.update()
     for enemy in enemies:
-        enemy.move()
+        enemy.update()
 
     # Generate new enemies
     if random.randint(0, 100) < 5:
@@ -114,6 +114,8 @@ while not done:
     dragon.draw(screen)
     for enemy in enemies:
         enemy.draw(screen)
+    for bullet in dragon.bullets:
+        bullet.draw(screen)
 
     # Check for collisions
     for enemy in enemies:
