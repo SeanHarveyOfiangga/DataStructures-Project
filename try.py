@@ -102,3 +102,26 @@ while not done:
                 dragon.bullets.remove(bullet)
                 score += 10
 
+    # Generate new enemies
+    if random.randint(0, 100) < 5:
+        enemy = Enemy(random.randint(0, WIDTH), 0)
+        enemies.append(enemy)
+
+    # Draw the game objects
+    screen.fill((0, 0, 0))
+    dragon.draw(screen)
+    for enemy in enemies:
+        enemy.draw(screen)
+
+    # Check for collisions
+    for enemy in enemies:
+        if (dragon.x - enemy.x) ** 2 + (dragon.y - enemy.y) ** 2 < (dragon.width / 2 + enemy.width / 2) ** 2:
+            done = True
+            break
+        for bullet in dragon.bullets:
+            if (bullet.x - enemy.x) ** 2 + (bullet.y - enemy.y) ** 2 < (bullet.width / 2 + enemy.width / 2) ** 2:
+                enemies.remove(enemy)
+                dragon.bullets.remove(bullet)
+                score += 10
+
+   
