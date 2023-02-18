@@ -87,20 +87,22 @@ while not done:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = True
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT:
+                dragon.move_left()
+            elif event.key == pygame.K_RIGHT:
+                dragon.move_right()
+            elif event.key == pygame.K_SPACE:
+                bullet = dragon.shoot()
+                if bullet is not None:
+                    dragon.bullets.append(bullet)
 
-    # Update the game objects
-    dragon.update()
+    # Move the game objects
+    dragon.move()
+    for bullet in dragon.bullets:
+        bullet.move()
     for enemy in enemies:
-        enemy.update()
-        if enemy.y > HEIGHT:
-            enemies.remove(enemy)
-        if (dragon.x - enemy.x) ** 2 + (dragon.y - enemy.y) ** 2 < (dragon.width / 2 + enemy.width / 2) ** 2:
-            done = True
-        for bullet in dragon.bullets:
-            if (bullet.x - enemy.x) ** 2 + (bullet.y - enemy.y) ** 2 < (bullet.width / 2 + enemy.width / 2) ** 2:
-                enemies.remove(enemy)
-                dragon.bullets.remove(bullet)
-                score += 10
+        enemy.move()
 
     # Generate new enemies
     if random.randint(0, 100) < 5:
@@ -135,14 +137,14 @@ while not done:
     # Wait for the next frame
     clock.tick(60)
 
-    # Display the final score
-    screen.fill((0, 0, 0))
-    font = pygame.font.Font(None, 72)
-    text = font.render(f"Game over! Final score: {score}", True, (255, 255, 255))
-    text_rect = text.get_rect(center=(WIDTH/2, HEIGHT/2))
-    screen.blit(text, text_rect)
-    pygame.display.flip()
-    pygame.time.wait(3000)
+# Display the final score
+screen.fill((0, 0, 0))
+font = pygame.font.Font(None, 72)
+text = font.render(f"Game over! Final score: {score}", True, (255, 255, 255))
+text_rect = text.get_rect(center=(WIDTH/2, HEIGHT/2))
+screen.blit(text, text_rect)
+pygame.display.flip()
+pygame.time.wait(3000)
 
-    # Clean up
-    pygame.quit()
+# Clean up
+pygame.quit()
