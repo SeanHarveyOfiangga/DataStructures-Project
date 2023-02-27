@@ -151,21 +151,3 @@ while not done:
     font = pygame.font.Font(None, 36)
     text = font.render(f"Score: {score}", True, (255, 255, 255))
     screen.blit(text, (10, 10))
-
-    # Update the screen
-    pygame.display.flip()
-
-    # Wait for the next frame
-    clock.tick(60)
-
-# Display the final score
-screen.fill((0, 0, 0))
-font = pygame.font.Font(None, 72)
-text = font.render(f"Game over! Final score: {score}", True, (255, 255, 255))
-text_rect = text.get_rect(center=(WIDTH/2, HEIGHT/2))
-screen.blit(text, text_rect)
-pygame.display.flip()
-pygame.time.wait(3000)
-
-# Clean up
-pygame.quit()
