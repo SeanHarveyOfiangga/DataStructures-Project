@@ -2,7 +2,7 @@ import pygame
 import random
 
 # Set up the game window
-WIDTH = 800
+WIDTH = 576
 HEIGHT = 600
 pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -11,8 +11,12 @@ pygame.display.set_caption("Everwing")
 # Load the images
 dragon_image = pygame.image.load("Jade2.png")
 bullet_image = pygame.image.load("bullet2.png")
+bullet_image = pygame.transform.scale(bullet_image, (100, 100))
 enemy_image = pygame.image.load("enemy.png")
 enemy_image = pygame.transform.scale(enemy_image, (100, 100))  # scale to 100x100 pixels
+background_image = pygame.image.load("background.jpg")
+background_image = pygame.transform.scale(background_image, (576, 1080))
+
 
 # Define the classes for the game objects
 class Dragon:
@@ -22,7 +26,7 @@ class Dragon:
         self.image = dragon_image
         self.width = self.image.get_width()
         self.height = self.image.get_height()
-        self.speed = 5
+        self.speed = 15
         self.bullets = []
         self.bullet_speed = 10
 
@@ -45,11 +49,12 @@ class Dragon:
             bullet.move()
             if bullet.y < 0:
                 self.bullets.remove(bullet)
-            for enemy in enemies:
-                if (bullet.x - enemy.x) ** 2 + (bullet.y - enemy.y) ** 2 < (bullet.width / 2 + enemy.width / 2) ** 2:
-                    enemies.remove(enemy)
-                    self.bullets.remove(bullet)
-                    return True
+            else:
+                for enemy in enemies:
+                    if (bullet.x - enemy.x) ** 2 + (bullet.y - enemy.y) ** 2 < (bullet.width / 2 + enemy.width / 2) ** 2:
+                        enemies.remove(enemy)
+                        self.bullets.remove(bullet)
+                        return True
         return False
 
     def draw(self, screen):
@@ -87,17 +92,25 @@ class Enemy:
         self.image = enemy_image
         self.width = self.image.get_width()
         self.height = self.image.get_height()
-        self.speed = 5
-
+        self.speed = 3 
+ 
     def update(self):
         self.y += self.speed
 
     def draw(self, screen):
-        screen.blit(self.image, (self.x - self.width / 2, self.y))
+        screen.blit(self.image, (self.x - self.width / 2, self.y)) 
+
+class Background:
+    def __init__(self, image_path):
+        self.image = pygame.image.load(image_path)
+
+    def draw(self, surface):
+        surface.blit(self.image, (0, 0))
 
 # Define the main game loop
 dragon = Dragon(WIDTH / 2, HEIGHT - 100)
 enemies = []
+background = Background("background.jpg")
 clock = pygame.time.Clock()
 score = 0
 done = False
@@ -124,12 +137,12 @@ while not done:
     dragon.update_bullets()
 
     # Generate new enemies
-    if random.randint(0, 100) < 5:
+    if random.randint(0, 100) < 3:
         enemy = Enemy(random.randint(0, WIDTH), 0)
         enemies.append(enemy)
 
     # Draw the game objects
-    screen.fill((0, 0, 0))
+    background.draw(screen) # draw background first
     dragon.draw(screen)
     for enemy in enemies:
         enemy.draw(screen)
@@ -151,3 +164,21 @@ while not done:
     font = pygame.font.Font(None, 36)
     text = font.render(f"Score: {score}", True, (255, 255, 255))
     screen.blit(text, (10, 10))
+
+    # Update the screen
+    pygame.display.flip()
+
+    # Wait for the next frame
+    clock.tick(60)
+
+# Display the final score
+screen.fill((0, 0, 0))
+font = pygame.font.Font(None, 36)
+text = font.render(f"Game over! Final score: {score}", True, (255, 255, 255))
+text_rect = text.get_rect(center=(WIDTH/2, HEIGHT/2))
+screen.blit(text, text_rect)
+pygame.display.flip()
+pygame.time.wait(3000)
+
+# Clean up
+pygame.quit()
